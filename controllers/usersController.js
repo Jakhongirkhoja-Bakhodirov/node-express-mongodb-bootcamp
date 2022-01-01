@@ -21,11 +21,11 @@ const addNewUser = (req,res) => {
     const data = req.body
 
     const id = users[users.length-1].id+1;
-    const newTour = Object.assign({
+    const newUser = Object.assign({
         id:id
     },data);
 
-    users.push(newTour);
+    users.push(newUser);
 
     fs.writeFile(`${__dirname}/dev-data/data/users-simple.json`,JSON.stringify(users) , (err) => {
         if(err) {
@@ -38,20 +38,20 @@ const addNewUser = (req,res) => {
             
         res.status(200).json({
             status:true,
-            data : newTour
+            data : newUser
         });
     });
 }
 
 const updateUser = (req,res) => {
     const id = req.params.id*1;
-    const tour = users.find(el => el.id == id)
+    const user = users.find(el => el.id == id)
 
-    if(tour) {
+    if(user) {
         res.status(200).json({
             status:true,
             data:{
-                tour:req.body
+                user:req.body
             }
         });
     } else {
@@ -73,13 +73,13 @@ const getUserById = (req,res) => {
 
     const id = req.params.id*1;
 
-    const tour = users.find(el => el.id == id)
+    const user = users.find(el => el.id == id)
 
-    if(tour) {
+    if(user) {
         res.status(200).json({
             status:true,
             data:{
-                tour:tour
+                user:user
             }
         });
     } else {

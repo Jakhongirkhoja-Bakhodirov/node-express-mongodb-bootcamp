@@ -16,6 +16,16 @@ const getAllTours = (req,res) => {
     });
 }
 
+const checkID = (req,res,next,val) => {
+    if(req.params.id * 1 > tours.length) {
+        res.status(404).json({
+            'status':false,
+            'message':'Not found 404'
+        })
+    }
+    next();
+}
+
 const addNewTour = (req,res) => {
     const data = req.body
 
@@ -53,11 +63,6 @@ const updateTour = (req,res) => {
                 tour:req.body
             }
         });
-    } else {
-        res.status(404).json({
-            status:false,
-            message:'Not found'
-        });
     }
 }
 
@@ -81,12 +86,7 @@ const getTourById = (req,res) => {
                 tour:tour
             }
         });
-    } else {
-        res.status(404).json({
-            status:false,
-            message:'Not found'
-        });
-    }
+    } 
 }
 
 
@@ -95,5 +95,6 @@ module.exports = {
     getTourById,
     addNewTour,
     deleteTour,
-    updateTour
+    updateTour,
+    checkID
 }

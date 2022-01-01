@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const tourController = require('../controllers/toursController');
+
+
+router.param('id' , tourController.checkID);
+
+
 router
     .route('/')
     .get(tourController.getAllTours)
@@ -8,7 +13,6 @@ router
 
 router
     .route('/:id')
-    .get(tourController.getAllTours)
     .get(tourController.getTourById)
     .patch(tourController.updateTour)
     .delete(tourController.deleteTour);
