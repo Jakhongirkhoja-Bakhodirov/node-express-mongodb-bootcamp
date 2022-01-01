@@ -19,10 +19,20 @@ const getAllTours = (req,res) => {
 const checkID = (req,res,next,val) => {
     if(req.params.id * 1 > tours.length) {
         res.status(404).json({
-            'status':false,
-            'message':'Not found 404'
+            status:false,
+            message:'Not found 404'
         })
     }
+    next();
+}
+
+const checkBody = (req,res,next) => {
+    if(!req.body.name || !req.body.price) {
+        res.status(401).json({
+            status:false,
+            message:'Bad reqeust please fill in reqeust'
+        })
+    } 
     next();
 }
 
@@ -45,7 +55,7 @@ const addNewTour = (req,res) => {
             });
         }   
             
-        res.status(200).json({
+        res.status(201).json({
             status:true,
             data : newTour
         });
@@ -96,5 +106,6 @@ module.exports = {
     addNewTour,
     deleteTour,
     updateTour,
-    checkID
+    checkID,
+    checkBody
 }
