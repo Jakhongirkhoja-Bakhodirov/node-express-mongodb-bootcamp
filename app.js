@@ -8,6 +8,17 @@ const port = 3000;
 //Declare Middlewares
 app.use(express.json());
 
+app.use((req,res,next) => {
+    console.log('Hello from the test middleware')
+    next();
+})
+
+app.use((req,res,next) => {
+    req.requestTime = new Date().toISOString();
+    console.log('Hello from the test middleware')
+    next();
+})
+
 app.get('/' , (req,res) => {
     res.status(200).json({
         message:'Something new'
@@ -19,10 +30,12 @@ const tours = JSON.parse(
 );
 
 const getAllTours = (req,res) => {
+    console.log(req.requestTime);
     res.statusCode = 200;
     res.json({
         status:true,
         length:tours.length,
+        request_time:req.requestTime,
         data:{
             tours:tours
         }
@@ -30,29 +43,29 @@ const getAllTours = (req,res) => {
 }
 
 const addNewTour = (req,res) => {
-        const data = req.body
-    
-        const id = tours[tours.length-1].id+1;
-        const newTour = Object.assign({
-            id:id
-        },data);
-    
-        tours.push(newTour);
-    
-        fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours) , (err) => {
-            if(err) {
-                res.status(500).json({
-                    status:false,
-                    message:'something went wrong',
-                    error_message:err.message
-                });
-            }
-               
-                res.status(200).json({
-                    status:true,
-                    data : newTour
-                });
+    const data = req.body
+
+    const id = tours[tours.length-1].id+1;
+    const newTour = Object.assign({
+        id:id
+    },data);
+
+    tours.push(newTour);
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`,JSON.stringify(tours) , (err) => {
+        if(err) {
+            res.status(500).json({
+                status:false,
+                message:'something went wrong',
+                error_message:err.message
+            });
+        }   
+            
+        res.status(200).json({
+            status:true,
+            data : newTour
         });
+    });
 }
 
 const updateTour = (req,res) => {
