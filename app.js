@@ -8,10 +8,12 @@ const app = express();
 //set-up app's running port
 const port = 3000;
 
+
 //Declare Middlewares
 app.use(express.json());
 app.use(morgan('dev'));
 
+app.use(express.static(`${__dirname}/public`))
 
 app.use('/api/v1/tours',tourRouter);
 app.use('/api/v1/users',userRouter);
@@ -21,7 +23,8 @@ app.use((req,res,next) => {
     next();
 })
 
-app.use((req,res,next) => {
+app.use(  
+    (req,res,next) => {
     req.requestTime = new Date().toISOString();
     console.log('Hello from the test middleware')
     next();
