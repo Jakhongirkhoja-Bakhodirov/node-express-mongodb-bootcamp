@@ -4,7 +4,8 @@
   "description": "Node-Express-MongoDB Bootcamp with Jonas",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "nodemon server.js",
+    "start":"node_env=production nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

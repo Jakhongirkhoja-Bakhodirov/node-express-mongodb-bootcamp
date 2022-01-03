@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -9,44 +9,29 @@ const app = express();
 
 require('dotenv').config({path:'./config.env'});
 
-//set-up app's running port
-const port = 3000;
 
 //connecting MongoDB database
 const DB = process.env.DATABASE.replace('<password>' , process.env.DATABASE_PASSWORD);
 
-mongoose.connect(DB,{
+mongoose.connect(process.env.DATABASE_LOCAL,{
     useNewUrlParser:true,
     // useCreateIndex:true,
     // useFindAndModify:false
 }).then((con) => {
     console.log('Connected to database successfully!');
-    console.log(con.connections);
+   // console.log(con.connections);
 }).catch((err) => {
     console.log(`Database connection error ${err}`);
 });
 
-const tourSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:[true , 'A tour name is required!'],
-        unique:true
-    },
-    rating:{
-        type:Number,
-        default:4.5
-    },
-    price:{
-        type:Number,
-        required:[true,'A tour price is required!']
-    }
-});
 
-const Tour = mongoose.Model('Tour' , tourSchema);
 
 //Declare Middlewares
+// app.use()
+if(process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 app.use(express.json());
-app.use(morgan('dev'));
 
 app.use(express.static(`${__dirname}/public`))
 
@@ -64,7 +49,6 @@ app.use((req,res,next) => {
     next();
 })
 
+module.exports = app;
 
-app.listen(port , () => {
-    console.log(`App is running on port ${port}`);
-});
+
