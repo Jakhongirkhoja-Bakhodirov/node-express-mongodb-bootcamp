@@ -1,11 +1,9 @@
-const fs = require('fs');
+const Tour = require('../models/tourModel');
 
 
-const tours = JSON.parse(
-    fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-);
+const getAllTours = async(req,res) => {
 
-const getAllTours = (req,res) => {
+    const tours = await Tour.find();
     
     res.status(200).json({
         status:true,
@@ -17,12 +15,7 @@ const getAllTours = (req,res) => {
 }
 
 const checkID = (req,res,next,val) => {
-    if(req.params.id * 1 > tours.length) {
-        res.status(404).json({
-            status:false,
-            message:'Not found 404'
-        })
-    }
+    console.log('Just check id');
     next();
 }
 
@@ -36,44 +29,30 @@ const checkBody = (req,res,next) => {
     next();
 }
 
-const addNewTour = (req,res) => {
-    const data = req.body
-
-    const id = tours[tours.length-1].id+1;
-    const newTour = Object.assign({
-        id:id
-    },data);
-
-    tours.push(newTour);
-
-    fs.writeFile(`${__dirname}/../dev-data/data/tours-simple.json`,JSON.stringify(tours) , (err) => {
-        if(err) {
-            res.status(500).json({
-                status:false,
-                message:'something went wrong',
-                error_message:err.message
-            });
-        }   
-            
+const addNewTour = async(req,res) => {
+   
+    try {
+        const newTour = await Tour.create(req.body);
         res.status(201).json({
             status:true,
             data : newTour
         });
-    });
+    } catch(err) {
+        res.status(400).json({
+            status:false,
+            message:err
+        })    
+    }
+
+
 }
 
 const updateTour = (req,res) => {
     const id = req.params.id*1;
-    const tour = tours.find(el => el.id == id)
 
-    if(tour) {
-        res.status(200).json({
-            status:true,
-            data:{
-                tour:req.body
-            }
-        });
-    }
+    res.status(200).json({
+        status:true
+    })
 }
 
 const deleteTour = (req,res) => {
@@ -87,16 +66,12 @@ const getTourById = (req,res) => {
 
     const id = req.params.id*1;
 
-    const tour = tours.find(el => el.id == id)
+    res.status(200).json({
+        status:true,
+        data:{
+        }
+    });
 
-    if(tour) {
-        res.status(200).json({
-            status:true,
-            data:{
-                tour:tour
-            }
-        });
-    } 
 }
 
 
