@@ -2,16 +2,22 @@ const Tour = require('../models/tourModel');
 
 
 const getAllTours = async(req,res) => {
-
-    const tours = await Tour.find();
+    try{
+        const tours = await Tour.find();
     
-    res.status(200).json({
-        status:true,
-        length:tours.length,
-        data:{
-            tours:tours
-        }
-    });
+        res.status(200).json({
+            status:true,
+            length:tours.length,
+            data:{
+                tours:tours
+            }
+        });
+    }catch(err) {
+        res.status(404).json({
+            status:false,
+            message:err.message
+        });
+    }
 }
 
 const checkID = (req,res,next,val) => {
@@ -30,7 +36,6 @@ const checkBody = (req,res,next) => {
 }
 
 const addNewTour = async(req,res) => {
-   
     try {
         const newTour = await Tour.create(req.body);
         res.status(201).json({
@@ -43,8 +48,6 @@ const addNewTour = async(req,res) => {
             message:err
         })    
     }
-
-
 }
 
 const updateTour = (req,res) => {
@@ -62,16 +65,21 @@ const deleteTour = (req,res) => {
     });
 }
 
-const getTourById = (req,res) => {
-
-    const id = req.params.id*1;
-
-    res.status(200).json({
-        status:true,
-        data:{
-        }
-    });
-
+const getTourById = async(req,res) => {
+    try {
+        const tour = await Tour.findById(req.params.id);
+        res.status(200).json({
+            status:true,
+            data:{
+                tour:tour
+            }
+        });
+    }catch(err) {
+        res.status(404).json({
+            status:false,
+            message:err.message
+        });
+    }
 }
 
 
