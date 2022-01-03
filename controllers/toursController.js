@@ -9,7 +9,7 @@ const getAllTours = async(req,res) => {
             status:true,
             length:tours.length,
             data:{
-                tours:tours
+                tours
             }
         });
     }catch(err) {
@@ -40,7 +40,9 @@ const addNewTour = async(req,res) => {
         const newTour = await Tour.create(req.body);
         res.status(201).json({
             status:true,
-            data : newTour
+            data : {
+                newTour
+            }
         });
     } catch(err) {
         res.status(400).json({
@@ -50,19 +52,43 @@ const addNewTour = async(req,res) => {
     }
 }
 
-const updateTour = (req,res) => {
-    const id = req.params.id*1;
+const updateTour = async(req,res) => {
 
-    res.status(200).json({
-        status:true
-    })
+    try{
+        const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
+            new:true,
+            runValidators:true
+        });
+
+        res.status(200).json({
+            status:true,
+            data:{
+                tour
+            }
+        })
+    }catch(err){
+        res.status(400).json({
+            status:false,
+            message:err.message
+        });
+    }
 }
 
-const deleteTour = (req,res) => {
-    res.status(204).json({
-        status:true,
-        data:null
-    });
+const deleteTour = async(req,res) => {
+    try{
+        const tour = await Tour.findByIdAndDelete(req.params.id);
+        res.status(204).json({
+            status:true,
+            data:{
+                tour
+            }
+        });
+    }catch(err){
+        res.status(404).json({
+            status:false,
+            message:err.message
+        });
+    }
 }
 
 const getTourById = async(req,res) => {
@@ -71,7 +97,7 @@ const getTourById = async(req,res) => {
         res.status(200).json({
             status:true,
             data:{
-                tour:tour
+                tour
             }
         });
     }catch(err) {
