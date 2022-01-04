@@ -64,6 +64,13 @@ const getAllTours = async(req,res) => {
     }
 }
 
+const aliasTopTours = (req,res,next) => {
+    req.query.limit = 5;
+    req.query.page = 2;
+    req.query.fields = ['name' , 'price']; 
+    next();
+}
+
 const checkID = (req,res,next,val) => {
     console.log('Just check id');
     next();
@@ -160,5 +167,6 @@ module.exports = {
     deleteTour,
     updateTour,
     checkID,
-    checkBody
+    checkBody,
+    aliasTopTours
 }
