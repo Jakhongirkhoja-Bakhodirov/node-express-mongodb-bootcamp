@@ -117,6 +117,54 @@ const getTourById = async(req,res) => {
     }
 }
 
+const getTourStats = async(req,res) => {
+    try{
+        const stats = await Tour.aggregate([
+            { 
+                $match:{
+                duration:{$gte:4.5}
+                }
+            },
+            {
+                $group:{
+                _id:{$toUpper:'$difficulty'},
+                // _id:'$ratingsAverage',
+                // _id:'$difficulty',
+                numTours:{$sum:1},
+                avgRating:{$avg:'$ratingsAverage'},
+                avgPrice:{$avg:'$price'},
+                minPrice:{$min:'$price'},
+                maxPrice:{$max:'$price'}
+                }
+            },
+            {
+                $sort:{
+                    avgPrice:1
+                }
+            },
+            // {
+            //     $match:{
+            //         _id:{
+            //             $ne:'EASY'
+            //         }
+            //     }
+            // }
+        ]);
+
+        res.status(200).json({
+            status:true,
+            data:{
+                stats
+            }
+        });
+    }catch(err){
+        res.status(401).json({
+            status:false,
+            message:err.message
+        });
+    }
+}
+
 
 module.exports = {
     getAllTours,
@@ -126,5 +174,6 @@ module.exports = {
     updateTour,
     checkID,
     checkBody,
-    aliasTopTours
+    aliasTopTours,
+    getTourStats
 }
