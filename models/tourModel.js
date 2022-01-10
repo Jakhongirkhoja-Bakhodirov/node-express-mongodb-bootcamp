@@ -60,6 +60,9 @@ const tourSchema = new mongoose.Schema({
     },
     slug:{
         type:String
+    },
+    secretTour:{
+        type:Boolean    
     }
 },  {  
     toJSON:{virtuals:true},
@@ -71,17 +74,28 @@ tourSchema.virtual('durationWeeks').get(function() {
 });
 
 //Document Middleware:runs before .save() and .create()
-tourSchema.pre('save' , function(next) {
-    this.slug = slugify(this.name , {lower:true})
-    next();
-});
+// tourSchema.pre('save' , function(next) {
+//     this.slug = slugify(this.name , {lower:true})
+//     next();
+// });
 
-//Post middleware is executed after all pre middleware has been executed
-tourSchema.post('save' , function(doc , next) {
+// //Post middleware is executed after all pre middleware has been executed
+// tourSchema.post('save' , function(doc , next) {
+//     console.log(doc);
+//     next();
+// });
+
+//Query middleware 
+tourSchema.pre(/^find/ , function(next) {
+    console.log('Find' , this.getQuery());
+    this.find({duration:{$ne:51}})
+    next();
+})
+
+tourSchema.post(/^find/ , function(doc,next) {
     console.log(doc);
     next();
-});
-
+}); 
 const Tour = mongoose.model('Tour' , tourSchema);
 
 module.exports = Tour;
