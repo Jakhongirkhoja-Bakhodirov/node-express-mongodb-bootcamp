@@ -4,7 +4,10 @@ const ApiFeatures = require('../utils/apiFeatures');
 const getAllTours = async(req,res) => {
     try{
       //Execute query
-        const features = new ApiFeatures(Tour.find() , req.query).filter().sorting().limitFields();
+        const features = new ApiFeatures(Tour.find() , req.query)
+        .filter()
+        .sorting()
+        .limitFields();
         const tours = await features.query;
 
         res.status(200).json({
