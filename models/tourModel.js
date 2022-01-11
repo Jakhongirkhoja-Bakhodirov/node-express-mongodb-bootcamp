@@ -86,16 +86,30 @@ tourSchema.virtual('durationWeeks').get(function() {
 // });
 
 //Query middleware 
-tourSchema.pre(/^find/ , function(next) {
-    console.log('Find' , this.getQuery());
-    this.find({duration:{$ne:51}})
-    next();
-})
+// tourSchema.pre(/^find/ , function(next) {
+//     console.log('Find' , this.getQuery());
+//     this.find({duration:{$ne:51}})
+//     next();
+// })
 
-tourSchema.post(/^find/ , function(doc,next) {
-    console.log(doc);
+// tourSchema.post(/^find/ , function(doc,next) {
+//     console.log(doc);
+//     next();
+// }); 
+
+//Aggregation Middleware
+tourSchema.pre('aggregate' , function(next) {
+    this.pipeline().unshift({
+        $match:{
+            secretTour:{
+                $ne:false
+            }
+        }
+    })
+    console.log(this.pipeline());
     next();
-}); 
+});
+
 const Tour = mongoose.model('Tour' , tourSchema);
 
 module.exports = Tour;
