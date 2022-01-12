@@ -8,7 +8,7 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-require('dotenv').config({path:'./config.env'});
+require('dotenv').config({path:'./.env'});
 
 
 //Declare Middlewares
