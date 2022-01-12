@@ -15,7 +15,8 @@ require('dotenv').config({path:'./config.env'});
 // app.use()
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
-}
+}   
+
 app.use(express.json());
 
 app.use(express.static(`${__dirname}/public`))
