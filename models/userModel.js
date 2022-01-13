@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:[true,'Please provide a password'],
         min:[8,'Password must be more or equal than 8 characters'],
+        select:false
     },
     password_confirmation:{
         type:String,
@@ -33,6 +34,7 @@ const userSchema = new mongoose.Schema({
     },
 });
 
+//Using Document Middleware to hash password
 userSchema.pre('save' , async function(next) {
     //this function only runs if the password is modified
     if(!this.isModified('password')) {
@@ -44,6 +46,11 @@ userSchema.pre('save' , async function(next) {
 
     next();
 });
+
+//Using Document Middleware to 
+userSchema.methods.correctPassword = async function(candidatePassword,userPassword) {
+    return await bcrypt.compare(candidatePassword , userPassword);
+};
 
 const User = mongoose.model('User' , userSchema);
 

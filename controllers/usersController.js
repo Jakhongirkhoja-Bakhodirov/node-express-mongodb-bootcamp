@@ -1,21 +1,21 @@
-const fs = require('fs');
+const User = require('../models/userModel');
+const ApiFeatures = require('../utils/apiFeatures');
+const catchAsync = require('../utils/catchAsync');
 
-const users = JSON.parse(
-    fs.readFileSync(`${__dirname}/../dev-data/data/users.json`)
-);
 
-const getAllUsers = (req,res) => {
-    console.log(req.requestTime);
+const getAllUsers = catchAsync(async(req,res) => {
+    
+    const users = await User.find();
+
     res.statusCode = 200;
     res.json({
         status:true,
         length:users.length,
-        request_time:req.requestTime,
         data:{
-            users:users
+            users
         }
     });
-}
+})
 
 const addNewUser = (req,res) => {
     const data = req.body
@@ -27,20 +27,20 @@ const addNewUser = (req,res) => {
 
     users.push(newUser);
 
-    fs.writeFile(`${__dirname}/dev-data/data/users-simple.json`,JSON.stringify(users) , (err) => {
-        if(err) {
-            res.status(500).json({
-                status:false,
-                message:'something went wrong',
-                error_message:err.message
-            });
-        }   
+    // fs.writeFile(`${__dirname}/dev-data/data/users-simple.json`,JSON.stringify(users) , (err) => {
+    //     if(err) {
+    //         res.status(500).json({
+    //             status:false,
+    //             message:'something went wrong',
+    //             error_message:err.message
+    //         });
+    //     }   
             
-        res.status(200).json({
-            status:true,
-            data : newUser
-        });
-    });
+    //     res.status(200).json({
+    //         status:true,
+    //         data : newUser
+    //     });
+    // });
 }
 
 const updateUser = (req,res) => {
