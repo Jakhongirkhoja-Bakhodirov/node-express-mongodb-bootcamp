@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
             message:'Password do not match , please check it'
         }
     },
+    passwordChangeAt:Date
 });
 
 //Using Document Middleware to hash password
@@ -50,6 +51,14 @@ userSchema.pre('save' , async function(next) {
 //Using Document Middleware to 
 userSchema.methods.correctPassword = async function(candidatePassword,userPassword) {
     return await bcrypt.compare(candidatePassword , userPassword);
+};
+
+userSchema.methods.changePasswordAfter = async function(JWTTimestamp) {
+    if(this.passwordChangeAt) {
+        return JWTTimestamp < (this.passwordChangeAt.getTime() / 1000);
+    }
+
+    return false;
 };
 
 const User = mongoose.model('User' , userSchema);

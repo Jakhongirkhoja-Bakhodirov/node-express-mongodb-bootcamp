@@ -10,7 +10,7 @@ router.param('id' , (req,res,next,val) => {
 
 router
     .route('/')
-    .get(userController.getAllUsers)
+    .get(authController.protect,userController.getAllUsers)
     .post(userController.addNewUser);
 
 router
