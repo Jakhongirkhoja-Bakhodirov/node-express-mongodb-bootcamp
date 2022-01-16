@@ -29,6 +29,6 @@ router.post('/forgot-password' , authController.forgotPassword);
 //Reset Password API
 router.post('/reset-password/:token' , authController.resetPassword);
 
-router.post('/update/password'  , authController.protect ,authController.updatePassword);
+router.patch('/update/password'  , authController.protect ,authController.updatePassword);
 
 module.exports = router;
