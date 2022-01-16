@@ -1,7 +1,17 @@
 const User = require('../models/userModel');
 const ApiFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
+const filterObj = (obj , ...allowedFields) => {
+    const newObj = {};
+    Object.keys(obj).forEach(el => {
+        if(allowedFields.includes(el))  {
+            newObj[el] = obj[el];
+        }
+    });
+    return  newObj;
+}
 
 const getAllUsers = catchAsync(async(req,res) => {
     
@@ -62,6 +72,27 @@ const updateUser = (req,res) => {
     }
 }
 
+const updateMe = catchAsync(async(req,res,next) => {
+    //1)Create an Error if user posts password data
+    if(req.body.password || req.body.password_confirmation) {
+        return next(new AppError('This route is not for updating password , please use other API',400));
+    }
+
+    //Filter request body 
+    const filteredBody = filterObj(req.body , 'name' , 'email');
+
+    //2)Update user Document
+    const updatedUser = await User.findByIdAndUpdate(req.user.id,filteredBody,{
+        new:true,
+        runValidators:true
+    }); 
+    res.status(200).json({
+        status:'success',
+        message:'User data has been updated successfully!',
+        user:updatedUser
+    });
+});
+
 const deleteUser = (req,res) => {
     res.status(204).json({
         status:true,
@@ -95,6 +126,7 @@ module.exports = {
     getUserById,
     deleteUser,
     updateUser,
+    updateMe,
     addNewUser
 }
 
