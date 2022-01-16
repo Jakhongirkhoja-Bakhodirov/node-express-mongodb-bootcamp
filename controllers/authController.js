@@ -169,6 +169,41 @@ const resetPassword = catchAsync(async(req,res,next) => {
         token,
         message:'Password updated successfully!'
     });
+});
+
+const updatePassword = catchAsync(async(req,res,next) => {
+    
+    //1)Get the user from Collection
+    let token;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+    const decode = await promisify(jwt.verify)(token , process.env.JWT_SECRET);
+    const user = await User.findById(decode.id).select('+password');
+    console.log(decode,user);
+
+   //2)Check if the POSTed current password is correct
+    if(!req.body.password || !req.body.password_confirmation) {
+       return next(new AppError('Password and password confirmation fields are required!' , 400));
+    }
+
+    // if(!(await user.correctPassword(req.body.password_confirmation,user.password))) {
+    //     return next(new AppError('Your current password is wrong' , 400));
+    // }
+
+    //3)If so , update password
+    user.password = req.body.password;
+    user.password_confirmation = req.body.password_confirmation;
+    user.passwordChangeAt = Date.now();
+    await user.save({validateBeforeSave:false});
+
+    //4)Log user in , send JWT Token
+    const newToken = signToken(user._id);
+    res.status(200).json({
+        status:'success',
+        newToken,
+        message:`password ${user.name}'s updated successfully!`
+    });
 })
 
 module.exports = {
@@ -177,5 +212,6 @@ module.exports = {
     protect,
     restrictTo,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updatePassword
 }
