@@ -24,9 +24,9 @@ router.post('/signup' , authController.signUp);
 router.post('/login' , authController.login)
 
 //Forgot Password API
-router.post('/forgot' , authController.forgotPassword);
+router.post('/forgot-password' , authController.forgotPassword);
 
 //Reset Password API
-router.post('/reset' , authController.resetPassword);
+router.post('/reset-password/:token' , authController.resetPassword);
 
 module.exports = router;
