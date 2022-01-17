@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema({
         enum:['admin' , 'lead-guide' , 'guide' , 'user'],
         default:'user'
     },
+    active:{
+        type:Boolean,
+        default:true,
+        select:false
+    },
     password:{
         type:String,
         required:[true,'Please provide a password'],
@@ -89,6 +94,12 @@ userSchema.pre('save' , function(next) {
     }
 
     this.passwordChangeAt = Date.now() - 1000;    
+    next();
+});
+
+userSchema.pre(/^find/ , function(next) {
+    this.find({active:true});
+    this.select('-__v');
     next();
 });
 

@@ -100,6 +100,15 @@ const deleteUser = (req,res) => {
     });
 }
 
+const deleteMe = async(req,res) => {
+    await User.findByIdAndUpdate(req.user.id,{active:false});
+    
+    res.status(204).json({
+        status:'success',
+        message:'User has been deleted successfully'
+    });
+}
+
 const getUserById = (req,res) => {
 
     const id = req.params.id*1;
@@ -125,6 +134,7 @@ module.exports = {
     getAllUsers,
     getUserById,
     deleteUser,
+    deleteMe,
     updateUser,
     updateMe,
     addNewUser
