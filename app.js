@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const AppError = require('./utils/appError');
 const globalErrorHandling = require('./controllers/errorController');
 
@@ -16,6 +17,14 @@ require('dotenv').config({path:'./.env'});
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }   
+
+const rateLimiter = rateLimit({
+    max:2,
+    windowMs:60*60*1000,
+    message:'Too many request with the current IP address , please try again later on'
+});
+
+app.use('/api' , rateLimiter);
 
 app.use(express.json());
 
