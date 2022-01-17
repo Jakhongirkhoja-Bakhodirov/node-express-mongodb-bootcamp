@@ -10,6 +10,32 @@ const signToken = (id) => {
     return jwt.sign({id:id} , process.env.JWT_SECRET ,{ expiresIn:process.env.JWT_EXPIRES_IN});
 }
 
+const createSendToken = (user,statusCode,res) => {
+    const token = signToken(user._id);
+    
+    const cookieOptions = {
+        expires:new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        secure:true,
+        httpOnly:true
+    }
+
+    if(process.env.NODE_ENV == 'production') {
+        cookieOptions.secure = true;
+    }
+    
+    res.cookie('jwt',token,cookieOptions);
+
+    //hide credential fields in collection
+    user.password = undefined;
+    user.__v = undefined;
+
+    res.status(201).json({
+        status:true,
+        token,
+        data:user
+    });
+}
+
 const signUp = catchAsync(async(req,res,next) => {
     const newUser = await User.create({
         name:req.body.name,
@@ -20,13 +46,7 @@ const signUp = catchAsync(async(req,res,next) => {
         passwordChangeAt:req.body.passwordChangeAt
     });
 
-    const token = signToken(newUser._id);
-    
-    res.status(201).json({
-        status:true,
-        token,
-        data:newUser
-    });
+    createSendToken(newUser,201,res);
 });
 
 const login = catchAsync(async(req,res,next) => {
@@ -46,13 +66,7 @@ const login = catchAsync(async(req,res,next) => {
     }
 
     //3)If everything is okey send token to client
-
-    const token = signToken(user._id);
-
-    res.status(200).json({
-        status:'success',
-        token
-    });
+    createSendToken(user,200,res);
 });
 
 const protect = catchAsync(async (req,res,next) => {
@@ -163,12 +177,7 @@ const resetPassword = catchAsync(async(req,res,next) => {
     await user.save({validateBeforeSave:false});
    
     //4)Log the user in , send JWT
-    const token = signToken(user._id);    
-    res.status(200).json({
-        status:'success',
-        token,
-        message:'Password updated successfully!'
-    });
+    createSendToken(user,200,res);
 });
 
 const updatePassword = catchAsync(async(req,res,next) => {
@@ -187,12 +196,7 @@ const updatePassword = catchAsync(async(req,res,next) => {
     await user.save();
 
     //4)Log user in , send JWT Token
-    const token = signToken(user._id);    
-    res.status(200).json({
-        status:'success',
-        token,
-        message:'Password updated successfully!'
-    });
+    createSendToken(user,200,res);
 })
 
 module.exports = {
