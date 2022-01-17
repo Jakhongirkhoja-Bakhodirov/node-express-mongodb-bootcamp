@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+
 const AppError = require('./utils/appError');
 const globalErrorHandling = require('./controllers/errorController');
 
@@ -14,6 +16,11 @@ require('dotenv').config({path:'./.env'});
 
 //Declare Middlewares
 // app.use()
+
+//setting secure http headers
+app.use(helmet());
+
+//Developement logging
 if(process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }   
@@ -24,9 +31,11 @@ const rateLimiter = rateLimit({
     message:'Too many request with the current IP address , please try again later on'
 });
 
+//Limit requests from same API
 app.use('/api' , rateLimiter);
 
-app.use(express.json());
+//Body-parser , reading data from body into req.body
+app.use(express.json({limit:'10kb'}));
 
 app.use(express.static(`${__dirname}/public`))
 
