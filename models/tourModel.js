@@ -102,7 +102,10 @@ const tourSchema = new mongoose.Schema({
           day: Number
         }
     ],
-    guides:Array,
+    guides:{
+        type:mongoose.Schema.ObjectId,
+        ref:User
+    },
     slug:{
         type:String
     },
@@ -119,11 +122,11 @@ tourSchema.virtual('durationWeeks').get(function() {
 });
 
 //Document Middleware:runs before .save() and .create()
-tourSchema.pre('save' , async function(next) {
-    const guidePromises = this.guides.map(async id => User.findById(id));
-    this.guides = await Promise.all(guidePromises);
-    next();
-});
+// tourSchema.pre('save' , async function(next) {
+//     const guidePromises = this.guides.map(async id => User.findById(id));
+//     this.guides = await Promise.all(guidePromises);
+//     next();
+// });
 // tourSchema.pre('save' , function(next) {
 //     this.slug = slugify(this.name , {lower:true})
 //     next();
