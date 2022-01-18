@@ -18,7 +18,7 @@ const getReview = catchAsync(async(req,res,next) => {
     }
     res.status(200).json({
         success:'success',
-        data:reviews
+        data:review
     });
 });
 
