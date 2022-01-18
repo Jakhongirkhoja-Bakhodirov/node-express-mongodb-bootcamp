@@ -147,7 +147,7 @@ tourSchema.virtual('durationWeeks').get(function() {
 tourSchema.pre(/^find/ , function(next) {
     this.populate({
         path:'guides',
-        select:'-passwordResetToken -passwordResetExpires -passwordChangeAt'
+        select:'-passwordResetToken -passwordResetExpires -passwordChangeAt -email'
     });
     next();
 });
