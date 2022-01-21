@@ -1,5 +1,4 @@
 const User = require('../models/userModel');
-const ApiFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const handleFactory = require('./handleFactory');
@@ -14,19 +13,7 @@ const filterObj = (obj , ...allowedFields) => {
     return  newObj;
 }
 
-const getAllUsers = catchAsync(async(req,res) => {
-    
-    const users = await User.find();
-
-    res.statusCode = 200;
-    res.json({
-        status:true,
-        length:users.length,
-        data:{
-            users
-        }
-    });
-})
+const getAllUsers = handleFactory.getAll(User);
 
 const createUser = handleFactory.createOne(User);
 
@@ -64,26 +51,7 @@ const deleteMe = async(req,res) => {
     });
 }
 
-const getUserById = (req,res) => {
-
-    const id = req.params.id*1;
-
-    const user = users.find(el => el.id == id)
-
-    if(user) {
-        res.status(200).json({
-            status:true,
-            data:{
-                user:user
-            }
-        });
-    } else {
-        res.status(404).json({
-            status:false,
-            message:'Not found'
-        });
-    }
-}
+const getUserById = handleFactory.getOne(User);
  
 module.exports = {
     getAllUsers,

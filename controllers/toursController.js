@@ -1,26 +1,9 @@
 const Tour = require('../models/tourModel');
-const ApiFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const handleFactory = require('./handleFactory');
 
-const getAllTours = catchAsync(async(req,res,next) => {
-
-    //Execute query
-    const features = new ApiFeatures(Tour.find() , req.query)
-    .filter()
-    .sorting()
-    .limitFields();
-    const tours = await features.query;
-
-    res.status(200).json({
-        status:true,
-        length:tours.length,
-        data:{
-            tours
-        }
-    });
-})
+const getAllTours = handleFactory.getAll(Tour);
 
 const aliasTopTours = (req,res,next) => {
     req.query.limit = 5;
@@ -50,18 +33,7 @@ const updateTour = handleFactory.updateOne(Tour);
 
 const deleteTour =  handleFactory.deleteOne(Tour);
 
-const getTourById = catchAsync(async(req,res,next) => {
-    const tour = await Tour.findById(req.params.id).populate('reviews');
-    if(!tour) {
-        return next(new AppError(`Tour not found with following ID ${req.params.id}` , 404));
-    }
-    res.status(200).json({
-        status:true,
-        data:{
-            tour
-        }
-    });
-});
+const getTourById = handleFactory.getOne(Tour, {path:'reviews'});
 
 const getTourStats = catchAsync(async(req,res,next) => {
     const stats = await Tour.aggregate([
