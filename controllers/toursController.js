@@ -44,30 +44,9 @@ const checkBody = (req,res,next) => {
     next();
 }
 
-const addNewTour = catchAsync(async(req,res,next) => {
-    const newTour = await Tour.create(req.body);
-    res.status(201).json({
-        status:true,
-        data : {
-            newTour
-        }
-    });
-});
+const createTour = handleFactory.createOne(Tour);
 
-const updateTour = catchAsync(async(req,res) => {
-
-    const tour = await Tour.findByIdAndUpdate(req.params.id,req.body,{
-        new:true,
-        runValidators:true
-    });
-
-    res.status(200).json({
-        status:true,
-        data:{
-            tour
-        }
-    })
-});
+const updateTour = handleFactory.updateOne(Tour);
 
 const deleteTour =  handleFactory.deleteOne(Tour);
 
@@ -180,7 +159,7 @@ const getMonthlyPlan = catchAsync(async(req,res,next) => {
 module.exports = {
     getAllTours,
     getTourById,
-    addNewTour,
+    createTour,
     deleteTour,
     updateTour,
     checkBody,

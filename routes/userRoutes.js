@@ -11,7 +11,7 @@ router.param('id' , (req,res,next,val) => {
 router
     .route('/')
     .get(authController.protect,userController.getAllUsers)
-    .post(userController.addNewUser);
+    .post(userController.createUser);
 
 router
     .route('/:id')

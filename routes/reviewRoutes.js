@@ -7,7 +7,7 @@ const authController = require('../controllers/authController');
 router
     .route('/')
     .get(reviewController.getAllReviews)
-    .post(authController.protect , authController.restrictTo('user') , reviewController.createReiview)
+    .post(authController.protect , authController.restrictTo('user') , reviewController.setTourUserIds , reviewController.createReiview)
 
 router
     .route('/:id')

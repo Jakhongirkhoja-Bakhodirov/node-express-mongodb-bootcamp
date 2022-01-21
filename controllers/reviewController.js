@@ -28,9 +28,14 @@ const getReview = catchAsync(async(req,res,next) => {
     });
 });
 
-const createReiview = catchAsync(async(req,res) => {
+const setTourUserIds = (req,res,next) => {
     if(!req.body.tour) req.body.tour = req.params.tourId;
     if(!req.body.user) req.body.user = req.user.id;
+    next();
+}
+
+const createReiview = catchAsync(async(req,res) => {
+
 
     const review = await Review.create(req.body);
     
@@ -40,21 +45,7 @@ const createReiview = catchAsync(async(req,res) => {
     });
 });
 
-const updateReview = catchAsync(async(req,res,next) => {
-    const review = await Review.findByIdAndUpdate(req.params.id,req.body,{
-        runValidators:true,
-        new:true
-    });
-    
-    if(!review) {
-        return next(new AppError(`A review not found with following ${req.params.id} id` , 404));
-    }
-
-    res.status(200).json({
-        status:'success',
-        review
-    });
-});
+const updateReview = handleFactory.updateOne(Review);
 
 const deleteReview = handleFactory.deleteOne(Review);
 
@@ -64,5 +55,6 @@ module.exports = {
     getReview,
     createReiview,
     updateReview,
-    deleteReview
+    deleteReview,
+    setTourUserIds
 }

@@ -19,7 +19,7 @@ router
 router
     .route('/')
     .get(authController.protect,tourController.getAllTours)
-    .post(tourController.checkBody,tourController.addNewTour);
+    .post(tourController.checkBody,tourController.createTour);
 
 router
     .route('/:id')
