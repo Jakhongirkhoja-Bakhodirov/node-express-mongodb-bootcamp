@@ -4,16 +4,18 @@ const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
 
 
+router.use(authController.protect);
+
 router
     .route('/')
     .get(reviewController.getAllReviews)
-    .post(authController.protect , authController.restrictTo('user') , reviewController.setTourUserIds , reviewController.createReiview)
+    .post(authController.restrictTo('user') , reviewController.setTourUserIds , reviewController.createReiview)
 
 router
     .route('/:id')
     .get(reviewController.getReview)
-    .delete(reviewController.deleteReview)
-    .patch(reviewController.updateReview);
+    .delete(authController.restrictTo('admin' , 'lead-guide') , reviewController.deleteReview)
+    .patch(authController.restrictTo('admin' , 'lead-guide') , reviewController.updateReview);
 
 
 module.exports = router;

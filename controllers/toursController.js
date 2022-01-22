@@ -1,6 +1,5 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
 const handleFactory = require('./handleFactory');
 
 const getAllTours = handleFactory.getAll(Tour);
@@ -9,21 +8,6 @@ const aliasTopTours = (req,res,next) => {
     req.query.limit = 5;
     req.query.page = 2;
     req.query.fields = ['name' , 'price']; 
-    next();
-}
-
-// const checkID = (req,res,next,val) => {
-//     console.log('Just check id');
-//     next();
-// }
-
-const checkBody = (req,res,next) => {
-    if(!req.body.name || !req.body.price) {
-        res.status(401).json({
-            status:false,
-            message:'Bad reqeust please fill in reqeust'
-        })
-    } 
     next();
 }
 
@@ -134,7 +118,6 @@ module.exports = {
     createTour,
     deleteTour,
     updateTour,
-    checkBody,
     aliasTopTours,
     getTourStats,
     getMonthlyPlan

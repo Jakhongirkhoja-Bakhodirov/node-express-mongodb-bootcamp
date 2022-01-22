@@ -3,24 +3,7 @@ const router = express.Router();
 const userController = require('../controllers/usersController');
 const authController = require('../controllers/authController');
 
-router.param('id' , (req,res,next,val) => {
-    console.log(`The param middleware ${val}`);
-    next();
-})
 
-
-router.get('/me' , authController.protect , userController.getMe , userController.getUserById);
-
-router
-    .route('/')
-    .get(authController.protect,userController.getAllUsers)
-    .post(userController.createUser);
-
-router
-    .route('/:id')
-    .get(userController.getUserById)
-    .patch(userController.updateUser)
-    .delete(authController.protect,authController.restrictTo('admin') ,userController.deleteUser);
 
 router.post('/signup' , authController.signUp);
 
@@ -32,10 +15,30 @@ router.post('/forgot-password' , authController.forgotPassword);
 //Reset Password API
 router.post('/reset-password/:token' , authController.resetPassword);
 
-router.patch('/update/password' , authController.protect , authController.updatePassword);
+//Protect with JWT token all API's except declaring above this line!
+router.use(authController.protect);
 
-router.patch('/update/me' , authController.protect ,userController.updateMe);
+router.get('/me' , userController.getMe , userController.getUserById);
 
-router.delete('/delete/me' , authController.protect ,userController.deleteMe);
+router.patch('/update/password' , authController.updatePassword);
+
+router.patch('/update/me' , userController.updateMe);
+
+router.delete('/delete/me' , userController.deleteMe);
+
+router.use(authController.restrictTo('admin'));
+
+router
+    .route('/')
+    .get(userController.getAllUsers)
+    .post(userController.createUser);
+
+router
+    .route('/:id')
+    .get(userController.getUserById)
+    .patch(userController.updateUser)
+    .delete(userController.deleteUser);
+
+
 
 module.exports = router;
