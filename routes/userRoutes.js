@@ -8,6 +8,9 @@ router.param('id' , (req,res,next,val) => {
     next();
 })
 
+
+router.get('/me' , authController.protect , userController.getMe , userController.getUserById);
+
 router
     .route('/')
     .get(authController.protect,userController.getAllUsers)

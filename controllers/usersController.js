@@ -19,6 +19,11 @@ const createUser = handleFactory.createOne(User);
 
 const updateUser = handleFactory.updateOne(User);
 
+const getMe = (req,res,next) => {
+    req.params.id = req.user.id;
+    next();
+}
+
 const updateMe = catchAsync(async(req,res,next) => {
     //1)Create an Error if user posts password data
     if(req.body.password || req.body.password_confirmation) {
@@ -60,6 +65,7 @@ module.exports = {
     deleteMe,
     updateUser,
     updateMe,
-    createUser
+    createUser,
+    getMe
 }
 
