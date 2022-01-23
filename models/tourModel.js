@@ -108,7 +108,7 @@ const tourSchema = new mongoose.Schema({
     }],
     slug:{
         type:String
-    },
+    }, 
     secretTour:{
         type:Boolean    
     }
@@ -116,6 +116,11 @@ const tourSchema = new mongoose.Schema({
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 });
+
+//Declaring indexes 
+// tourSchema.index({price:1});
+
+tourSchema.index({price:1 , ratingsAverage:-1})
 
 tourSchema.virtual('durationWeeks').get(function() {
     return this.duration / 7;

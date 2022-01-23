@@ -49,7 +49,7 @@ exports.getAll = Model => catchAsync(async(req,res,next) => {
   .filter()
   .sorting()
   .limitFields();
-  const doc = await features.query;
+  const doc = await features.query.explain();
 
   res.status(200).json({
       status:true,
