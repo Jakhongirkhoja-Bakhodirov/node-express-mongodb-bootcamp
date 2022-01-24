@@ -20,24 +20,28 @@ exports.createOne = Model => catchAsync(async(req,res,next) => {
     res.status(201).json({
       status:true,
       data : {
-          doc
+          doc  
       }
   });
 });
 
-exports.updateOne = Model => catchAsync(async(req,res) => {
+exports.updateOne = Model =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
 
-  const doc = await Model.findByIdAndUpdate(req.params.id,req.body,{
-      new:true,
-      runValidators:true
-  });
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
+    }
 
-  res.status(200).json({
-      status:true,
-      data:{
-        doc
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc
       }
-  });
+    });
 });
 
 exports.getAll = Model => catchAsync(async(req,res,next) => {
@@ -49,8 +53,8 @@ exports.getAll = Model => catchAsync(async(req,res,next) => {
   .filter()
   .sorting()
   .limitFields();
-  const doc = await features.query.explain();
-
+  // const doc = await features.query.explain();
+  const doc = await features.query;
   res.status(200).json({
       status:true,
       length:doc.length,
