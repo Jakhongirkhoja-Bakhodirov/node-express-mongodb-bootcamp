@@ -33,8 +33,7 @@ const reviewSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
-
-reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+ 
 
 reviewSchema.pre(/^find/, function(next) {
   // this.populate({
@@ -88,7 +87,8 @@ reviewSchema.post('save', function() {
 // findByIdAndUpdate
 // findByIdAndDelete
 reviewSchema.pre(/^findOneAnd/, async function(next) {
-  this.review = await this.findOne();
+  this.r = this.findOne();
+  this.review = await this.r.clone();
   // console.log(this.review);
   next();
 });

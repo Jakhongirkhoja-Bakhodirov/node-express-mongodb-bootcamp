@@ -51,7 +51,8 @@ const tourSchema = new mongoose.Schema({
     },
     ratingsAverage:{
         type:Number,
-        required:[true,'A tour must have a ratings average']
+        required:[true,'A tour must have a ratings average'],
+        set:val => Math.round(val*10) / 10
     },
     ratingsQuantity:{
         type:Number,
