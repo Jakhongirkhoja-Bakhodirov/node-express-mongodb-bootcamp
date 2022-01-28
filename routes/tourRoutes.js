@@ -29,6 +29,14 @@ router
 
 router.use('/:tourId/reviews' , reviewRoutes);
 
+router.
+    route('/tours-within/:distance/center/:latlng/unit/:unit')
+    .get(tourController.getToursWithin);
+
+router
+    .route('/distance/:latlng/unit/:unit')
+    .get(tourController.getDistance);
+
 // router.post('/:tourId/reviews' , authController.protect , authController.restrictTo('user') , reviewController.createReiview);
 
 module.exports = router;
