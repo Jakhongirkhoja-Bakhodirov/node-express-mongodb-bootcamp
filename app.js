@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const path = require('path');
 
 const AppError = require('./utils/appError');
 const globalErrorHandling = require('./controllers/errorController');
@@ -20,6 +21,10 @@ require('dotenv').config({path:'./.env'});
 
 //Declare Middlewares
 // app.use()
+
+//set-up pug template engine
+app.set('view engine' , 'pug');
+app.set('views' , path.join(__dirname , 'views'))
 
 //setting secure http headers
 app.use(helmet());
@@ -52,8 +57,12 @@ app.use(hpp({
     whitelist:['duration' ,'ratingsQuantity' , 'ratingsAverage' , 'difficulty' , 'maxGroupSize' , 'price']
 }));
 
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(path.join(__dirname , 'public')));
 
+
+app.get('/' , (req,res) => {
+    res.status(200).render('base');
+});
 app.use('/api/v1/tours',tourRouter);
 app.use('/api/v1/users',userRouter);
 app.use('/api/v1/reviews',reviewRouter);
