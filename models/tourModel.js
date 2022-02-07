@@ -140,10 +140,11 @@ tourSchema.virtual('reviews' , {
 //     this.guides = await Promise.all(guidePromises);
 //     next();
 // });
-// tourSchema.pre('save' , function(next) {
-//     this.slug = slugify(this.name , {lower:true})
-//     next();
-// });
+
+tourSchema.pre('save' , function(next) {
+    this.slug = slugify(this.name , {lower:true})
+    next();
+});
 
 // //Post middleware is executed after all pre middleware has been executed
 // tourSchema.post('save' , function(doc , next) {

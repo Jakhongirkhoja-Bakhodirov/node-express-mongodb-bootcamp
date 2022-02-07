@@ -12,4 +12,6 @@ router.get('/overview' , viewController.getOverview);
 
 router.get('/tour' , viewController.getTour);
 
+router.get('/tour/:slug' , viewController.getTourReview);
+
 module.exports = router;
