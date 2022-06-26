@@ -34,10 +34,12 @@
     "nodemailer": "^6.7.2",
     "pug": "^3.0.2",
     "slugify": "^1.6.5",
+    "superagent": "^8.0.0",
     "validator": "^13.7.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
-    "ndb": "^1.1.5"
+    "ndb": "^1.1.5",
+    "prettier": "2.6.2"
   }
 }
