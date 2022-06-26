@@ -59,13 +59,14 @@ const getDogPics = async () => {
   return '2:Ready here';
 };
 
-console.log('1:Will get doc picture');
-// const result = await getDogPics();
-// console.log(result);
-getDogPics().then((result) => {
-  console.log(result);
-});
-console.log('2:Done getting doc picture');
+(async () => {
+  try {
+    const result = await getDogPics();
+    console.log(result);
+  } catch (error) {
+    return new Error(error);
+  }
+})();
 
 //Callback-Hell
 
