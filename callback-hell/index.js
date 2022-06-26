@@ -25,6 +25,8 @@ const writeFilePro = (file, data) => {
 //   console.log(data);
 // });
 
+//Soleve Callback-Hell problem using Promises
+
 // readFilePro(`${__dirname}/dog.txt`)
 //   .then((data) => {
 //     console.log(`Breed: ${data}`);
@@ -45,7 +47,7 @@ const writeFilePro = (file, data) => {
 const getDogPics = async () => {
   try {
     const data = await readFilePro(`${__dirname}/dog.txt`);
-    console.log(`${data}`);
+    console.log(`Breed: ${data}`);
     const res = await superagent.get(
       `https://dog.ceo/api/breed/${data}/images/random`
     );
@@ -54,9 +56,18 @@ const getDogPics = async () => {
   } catch (error) {
     return new Error(error);
   }
+  return '2:Ready here';
 };
 
-getDogPics();
+console.log('1:Will get doc picture');
+// const result = await getDogPics();
+// console.log(result);
+getDogPics().then((result) => {
+  console.log(result);
+});
+console.log('2:Done getting doc picture');
+
+//Callback-Hell
 
 // fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
 //   console.log(`Breed: ${data}`);
